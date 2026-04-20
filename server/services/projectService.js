@@ -2,7 +2,7 @@ import { pool } from "../db.js";
 
 export const getProjects = async (userId) => {
   const result = await pool.query(
-    "SELECT p.id, p.name, p.created_at from projects as p inner join project_members as pm on pm.project_id = p.id inner join users as u on pm.user_id = u.id where u.id = $1",
+    "SELECT p.id, p.name,p.owner_id, p.created_at from projects as p inner join project_members as pm on pm.project_id = p.id inner join users as u on pm.user_id = u.id where u.id = $1",
     [userId],
   );
 

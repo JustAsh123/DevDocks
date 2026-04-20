@@ -1,7 +1,12 @@
 import { useState, useEffect, memo } from "react";
 import axios from "axios";
+import InviteMemberModal from "../modals/InviteMemberModal";
+import { useAuth } from "../context/AuthContext";
 // prop onInvite: called when "+ Invite" button is clicked
 function ProjectCard({ project, onInvite }) {
+  const [showModal, setShowModal] = useState(false);
+  const { user } = useAuth();
+
   const formattedDate = new Date(project.created_at).toLocaleDateString(
     "en-IN",
     {
@@ -14,6 +19,7 @@ function ProjectCard({ project, onInvite }) {
   const [members, setMembers] = useState([]);
 
   useEffect(() => {
+    console.log(project);
     const getMembers = async () => {
       const res = await axios.get(
         `http://localhost:3000/projects/members/${project.id}`,
@@ -31,11 +37,17 @@ function ProjectCard({ project, onInvite }) {
 
   return (
     <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-5 hover:border-[#3a3a3a] transition-colors">
+      {showModal && (
+        <InviteMemberModal
+          project={project}
+          onClose={() => setShowModal(false)}
+        />
+      )}
       <div className="flex items-start justify-between mb-1">
         <h3 className="text-base font-semibold text-white">{project.name}</h3>
-        {onInvite && (
+        {user.id === project.owner_id && (
           <button
-            onClick={onInvite}
+            onClick={() => setShowModal(true)}
             className="text-xs text-[#555] hover:text-white transition-colors ml-3 shrink-0 border border-[#2a2a2a] px-2 py-0.5 rounded"
           >
             + Invite
@@ -57,6 +69,5 @@ function ProjectCard({ project, onInvite }) {
     </div>
   );
 }
-
 
 export default memo(ProjectCard);

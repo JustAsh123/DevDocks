@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { inviteToProject } from "../api/projects";
 import { toast } from "react-toastify";
+import { useAuth } from "../context/AuthContext";
 
 // project prop: { id, title }
 export default function InviteMemberModal({ project, onClose }) {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
 
   const handleSend = async () => {
     if (!email.trim()) return;
@@ -44,7 +46,9 @@ export default function InviteMemberModal({ project, onClose }) {
           Project: <span className="text-[#777]">{project.title}</span>
         </p>
 
-        <label className="block text-sm text-[#888] mb-1.5">Email Address</label>
+        <label className="block text-sm text-[#888] mb-1.5">
+          Email Address
+        </label>
         <input
           type="email"
           value={email}
