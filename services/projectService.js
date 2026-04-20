@@ -1,0 +1,113 @@
+import { pool } from "../db.js";
+
+export const createProject = async (projectName, userId) => {
+  const result = await pool.query(
+    "INSERT INTO projects (name, owner_id) VALUES ($1, $2) RETURNING *",
+    [projectName, userId],
+  );
+  if (result.rows.length === 0) {
+    return { success: false, message: "Error creating project" };
+  }
+  await pool.query(
+    "INSERT INTO project_members (user_id, project_id) VALUES ($1, $2)",
+    [userId, result.rows[0].id],
+  );
+  return {
+    success: true,
+    project: result.rows[0],
+    message: "Project Created Successfully",
+  };
+};
+
+const isOwner = async (projId, userId) => {
+  const res = await pool.query(
+    "SELECT * FROM projects WHERE owner_id = $1 and id = $2",
+    [userId, projId],
+  );
+  return res.rows.length > 0;
+};
+
+const getIdFromEmail = async (email) => {
+  const res = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
+  if (res.rowCount === 0) return null;
+  return res.rows[0].id;
+};
+
+const isMember = async (projId, userId) => {
+  const res = await pool.query(
+    "SELECT * FROM project_members WHERE user_id = $1 and project_id = $2",
+    [userId, projId],
+  );
+  return res.rowCount > 0;
+};
+
+export const inviteProject = async (projId, userId, email) => {
+  //Check if inviter is not the owner
+  if (!(await isOwner(projId, userId))) {
+    return { success: false, message: "Only owner can invite members" };
+  }
+
+  // Check if already a member
+  const inviteeId = await getIdFromEmail(email);
+  if (!inviteeId) {
+    return { success: false, message: "User not found" };
+  }
+
+  if (await isMember(projId, inviteeId)) {
+    return { success: false, message: "User is already a member" };
+  }
+
+  // Fail safe for unique(projId, Email)
+  try {
+    const result = await pool.query(
+      "INSERT INTO project_invites (proj_id, inviter_id, invitee_id) VALUES ($1,$2,$3) RETURNING *",
+      [projId, userId, await getIdFromEmail(email)],
+    );
+    return {
+      success: true,
+      message: "User invited successfully",
+      invite: result.rows[0],
+    };
+  } catch (err) {
+    console.log(err);
+    return { success: false, message: "User is already invited" };
+  }
+};
+
+export const inviteResponse = async (userId, inviteId, response) => {
+  console.log(inviteId, userId);
+  const res = await pool.query(
+    "SELECT proj_id FROM project_invites WHERE id = $1 and invitee_id = $2",
+    [inviteId, userId],
+  );
+  console.log(res);
+  if (res.rowCount === 0) {
+    return { success: false, message: "Invite not found" };
+  }
+
+  const project_id = res.rows[0].proj_id;
+
+  if (response === "accept") {
+    try {
+      await pool.query(
+        "INSERT INTO project_members (user_id, project_id) VALUES ($1, $2)",
+        [userId, project_id],
+      );
+      await pool.query("DELETE FROM project_invites WHERE id = $1", [inviteId]);
+      return { success: true, message: "Invite accepted successfully" };
+    } catch (err) {
+      console.log(err);
+      return { success: false, message: "Error accepting invite" };
+    }
+  }
+
+  if (response === "reject") {
+    try {
+      await pool.query("DELETE FROM project_invites WHERE id = $1", [inviteId]);
+      return { success: true, message: "Invite rejected successfully" };
+    } catch (err) {
+      console.log(err);
+      return { success: false, message: "Error rejecting invite" };
+    }
+  }
+};
