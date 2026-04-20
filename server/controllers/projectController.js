@@ -1,5 +1,39 @@
 import * as projectService from "../services/projectService.js";
 
+export const loadProject = async (req, res) => {
+  const userId = req.user.id;
+
+  const result = await projectService.getProjects(userId);
+
+  if (!result.success) {
+    return res.json({
+      success: false,
+      message: result.message,
+    });
+  }
+  return res.json({
+    success: true,
+    message: result.message,
+    projects: result.projects,
+  });
+};
+
+export const getProjectMembers = async (req, res) => {
+  const { projId } = req.params;
+  const result = await projectService.getProjectMembers(projId);
+  if (!result.success) {
+    return res.json({
+      status: false,
+      message: result.message,
+    });
+  }
+  return res.json({
+    success: true,
+    message: result.message,
+    members: result.members,
+  });
+};
+
 export const createProject = async (req, res) => {
   const { projName } = req.body;
   const userId = req.user.id;

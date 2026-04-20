@@ -1,5 +1,37 @@
 import { pool } from "../db.js";
 
+export const getProjects = async (userId) => {
+  const result = await pool.query(
+    "SELECT p.id, p.name, p.created_at from projects as p inner join project_members as pm on pm.project_id = p.id inner join users as u on pm.user_id = u.id where u.id = $1",
+    [userId],
+  );
+
+  if (result.rows.length === 0) {
+    return { success: false, message: "No projects found" };
+  }
+
+  return {
+    success: true,
+    projects: result.rows,
+    message: "Projects fetched successfully",
+  };
+};
+
+export const getProjectMembers = async (projId) => {
+  const result = await pool.query(
+    "select u.name from users as u inner join project_members as pm on pm.user_id = u.id where pm.project_id = $1",
+    [projId],
+  );
+  if (result.rows.length === 0) {
+    return { success: false, message: "No members found" };
+  }
+  return {
+    success: true,
+    members: result.rows,
+    message: "Members fetched successfully",
+  };
+};
+
 export const createProject = async (projectName, userId) => {
   const result = await pool.query(
     "INSERT INTO projects (name, owner_id) VALUES ($1, $2) RETURNING *",
