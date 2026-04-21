@@ -1,7 +1,6 @@
-import { useEffect } from "react";
-
+import React from "react";
 // loading prop: disables buttons while API call is in progress
-export default function InviteCard({ invite, onAccept, onReject, loading }) {
+export default function InviteCard({ invite, loading, onAccept, onReject }) {
   const formattedDate = new Date(invite.created_at).toLocaleDateString(
     "en-IN",
     {
@@ -10,10 +9,6 @@ export default function InviteCard({ invite, onAccept, onReject, loading }) {
       year: "numeric",
     },
   );
-
-  useEffect(() => {
-    console.log(invite);
-  }, []);
 
   return (
     <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-5 hover:border-[#3a3a3a] transition-colors">

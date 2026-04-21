@@ -12,6 +12,13 @@ export const createProject = (projName) =>
 export const inviteToProject = (projId, email) =>
   API.post("/projects/invite", { projId, email });
 
+// GET /projects/members/:projId → returns: { success, message, members: [] }
+export const getProjectMembers = (projId) =>
+  API.get(`/projects/members/${projId}`);
+
+// GET /projects/load → returns: { success, message, projects: [] }
+export const getProjects = () => API.get("/projects/load");
+
 // POST /projects/response → body: { inviteId, response: "accept" | "reject" }
 // response: { success, message }
 export const respondToInvite = (inviteId, response) =>

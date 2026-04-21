@@ -108,7 +108,7 @@ export const inviteProject = async (projId, userId, email) => {
 
 export const getInvites = async (userId) => {
   const result = await pool.query(
-    "SELECT p.id, p.name, pm.created_at, u.name AS inviter_name, u.email AS inviter_email FROM projects p INNER JOIN project_invites pm ON p.id = pm.proj_id INNER JOIN users u ON pm.inviter_id = u.id WHERE pm.invitee_id = $1;",
+    "SELECT pm.id, p.name, pm.created_at, u.name AS inviter_name, u.email AS inviter_email FROM projects p INNER JOIN project_invites pm ON p.id = pm.proj_id INNER JOIN users u ON pm.inviter_id = u.id WHERE pm.invitee_id = $1;",
     [userId],
   );
 

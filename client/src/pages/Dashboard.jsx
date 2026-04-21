@@ -1,10 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import ProjectCard from "../components/ProjectCard";
 import CreateProjectModal from "../modals/CreateProjectModal";
 import InviteMemberModal from "../modals/InviteMemberModal";
-import { useEffect } from "react";
-import axios from "axios";
+import { getProjects } from "../api/projects";
 import { useAuth } from "../context/AuthContext";
 
 export default function Dashboard() {
@@ -17,17 +16,20 @@ export default function Dashboard() {
   // Load Projects
   useEffect(() => {
     const loadProjects = async () => {
-      const res = await axios.get("http://localhost:3000/projects/load", {
-        headers: {
-          Authorization: `${localStorage.getItem("token")}`,
-        },
-      });
-      setProjects(res.data.projects);
+      try {
+        const res = await getProjects();
+        setProjects(res.data.projects || []);
+      } catch (err) {
+        console.error("Failed to load projects", err);
+      }
     };
     loadProjects();
   }, []);
 
-  const handleCreate = (newProject) => {};
+  const handleCreate = (newProject) => {
+    // Add new project to the list locally (optimistic update)
+    setProjects((prev) => [newProject, ...prev]);
+  };
 
   return (
     <div className="min-h-screen bg-[#0f0f0f]">

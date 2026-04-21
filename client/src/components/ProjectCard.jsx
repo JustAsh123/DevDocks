@@ -1,5 +1,5 @@
 import { useState, useEffect, memo } from "react";
-import axios from "axios";
+import { getProjectMembers } from "../api/projects";
 import InviteMemberModal from "../modals/InviteMemberModal";
 import { useAuth } from "../context/AuthContext";
 // prop onInvite: called when "+ Invite" button is clicked
@@ -17,23 +17,25 @@ function ProjectCard({ project, onInvite }) {
   );
 
   const [members, setMembers] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    console.log(project);
-    const getMembers = async () => {
-      const res = await axios.get(
-        `http://localhost:3000/projects/members/${project.id}`,
-        {
-          headers: {
-            Authorization: `${localStorage.getItem("token")}`,
-          },
-        },
-      );
-      console.log(res.data.members);
-      setMembers(res.data.members);
+    const fetchMembers = async () => {
+      setLoading(true);
+      try {
+        const res = await getProjectMembers(project.id);
+        const { success, members } = res.data;
+        if (success) {
+          setMembers(members);
+        }
+      } catch (err) {
+        console.error("Failed to load members", err);
+      } finally {
+        setLoading(false);
+      }
     };
-    getMembers();
-  }, []);
+    fetchMembers();
+  }, [project.id]);
 
   return (
     <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-5 hover:border-[#3a3a3a] transition-colors">
