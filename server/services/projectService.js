@@ -89,11 +89,11 @@ export const inviteProject = async (projId, userId, email) => {
     return { success: false, message: "User is already a member" };
   }
 
-  // Fail safe for unique(projId, Email)
+  // Fail safe for unique(projId, inviteeId)
   try {
     const result = await pool.query(
       "INSERT INTO project_invites (proj_id, inviter_id, invitee_id) VALUES ($1,$2,$3) RETURNING *",
-      [projId, userId, await getIdFromEmail(email)],
+      [projId, userId, inviteeId], // reuse already-fetched inviteeId
     );
     return {
       success: true,

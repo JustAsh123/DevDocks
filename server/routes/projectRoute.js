@@ -1,17 +1,13 @@
 import express from "express";
 const router = express.Router();
 import * as projectController from "../controllers/projectController.js";
-import tokenValidator from "../middlewares/tokenValidator.js";
 
-router.get("/load", tokenValidator, projectController.loadProject);
-router.get(
-  "/members/:projId",
-  tokenValidator,
-  projectController.getProjectMembers,
-);
-router.get("/invites", tokenValidator, projectController.getInvites);
-router.post("/create", tokenValidator, projectController.createProject);
-router.post("/invite", tokenValidator, projectController.projectInvite);
-router.post("/response", tokenValidator, projectController.inviteResponse);
+// tokenValidator is already applied to the entire /projects router in script.js
+router.get("/load", projectController.loadProject);
+router.get("/members/:projId", projectController.getProjectMembers);
+router.get("/invites", projectController.getInvites);
+router.post("/create", projectController.createProject);
+router.post("/invite", projectController.projectInvite);
+router.post("/response", projectController.inviteResponse);
 
 export default router;
