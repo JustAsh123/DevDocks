@@ -69,10 +69,10 @@ export default function TaskDetailModal({ task, projectId, onClose, onUpdate, on
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-md animate-fadeIn"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="bg-[#141414] border border-[#2a2a2a] rounded-t-2xl sm:rounded-2xl w-full max-w-lg mx-0 sm:mx-4 p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+      <div className="animate-scaleIn bg-[#141414] border border-[#2a2a2a] rounded-t-2xl sm:rounded-2xl w-full max-w-lg mx-0 sm:mx-4 p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-2">

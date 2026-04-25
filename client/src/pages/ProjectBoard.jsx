@@ -55,9 +55,8 @@ function TaskCard({ task, onDragStart, onClick }) {
       draggable
       onDragStart={(e) => onDragStart(e, task)}
       onClick={() => onClick(task)}
-      className="group bg-[#1a1a1a] border border-[#262626] rounded-xl p-3.5 cursor-pointer
-        hover:border-[#383838] hover:bg-[#1e1e1e] transition-all duration-150
-        active:opacity-70 select-none"
+      className="card-hover group bg-[#1a1a1a] border border-[#262626] rounded-xl p-3.5 cursor-pointer
+        hover:border-[#383838] hover:bg-[#1e1e1e] active:opacity-70 select-none"
     >
       {/* Priority badge */}
       <div className="flex items-start justify-between gap-2 mb-2">
@@ -98,7 +97,10 @@ function TaskCard({ task, onDragStart, onClick }) {
 // ── Kanban Column ─────────────────────────────────────────────────────────────
 function KanbanColumn({ col, tasks, onDrop, onDragOver, onDragLeave, isDragOver, onTaskClick, onAddTask }) {
   return (
-    <div className="flex flex-col min-w-[280px] max-w-[280px]">
+    <div
+      className="animate-slideUp flex flex-col min-w-[280px] max-w-[280px]"
+      style={{ animationDelay: `${COLUMNS.findIndex(c => c.id === col.id) * 70}ms` }}
+    >
       {/* Column header */}
       <div className="flex items-center justify-between mb-3 px-1">
         <div className="flex items-center gap-2">

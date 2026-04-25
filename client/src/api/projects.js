@@ -23,3 +23,11 @@ export const getProjects = () => API.get("/projects/load");
 // response: { success, message }
 export const respondToInvite = (inviteId, response) =>
   API.post("/projects/response", { inviteId, response });
+
+// GET /projects/members-stats/:projId → members with task_count
+export const getMembersStats = (projId) =>
+  API.get(`/projects/members-stats/${projId}`);
+
+// DELETE /projects/members/:projId/:memberId → remove member (owner only)
+export const removeMember = (projId, memberId) =>
+  API.delete(`/projects/members/${projId}/${memberId}`);

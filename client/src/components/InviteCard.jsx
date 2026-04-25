@@ -1,41 +1,51 @@
 import React from "react";
-// loading prop: disables buttons while API call is in progress
+
 export default function InviteCard({ invite, loading, onAccept, onReject }) {
-  const formattedDate = new Date(invite.created_at).toLocaleDateString(
-    "en-IN",
-    {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    },
-  );
+  const formattedDate = new Date(invite.created_at).toLocaleDateString("en-IN", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
 
   return (
-    <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-5 hover:border-[#3a3a3a] transition-colors">
-      <div className="mb-3">
-        Project: <span className="text-[#999]">{invite.name}</span>
+    <div className="card-hover animate-slideUp bg-[#141414] border border-[#222] rounded-xl p-5 hover:border-[#333]">
+      {/* Project name */}
+      <div className="flex items-start justify-between mb-3">
+        <div>
+          <p className="text-xs text-[#555] mb-0.5 uppercase tracking-wider">Project</p>
+          <p className="text-base font-semibold text-white">{invite.name}</p>
+        </div>
+        <span className="text-[10px] text-[#444] border border-[#222] px-2 py-0.5 rounded-full">
+          {formattedDate}
+        </span>
       </div>
 
-      <p className="text-xs text-[#666] mb-1">
-        <p className="text-sm font-medium text-white">{invite.inviter_name}</p>
-        <p className="text-xs text-[#555]">{invite.inviter_email}</p>
-      </p>
-      <p className="text-xs text-[#555] mb-4">Invited on {formattedDate}</p>
+      {/* Inviter */}
+      <div className="flex items-center gap-2.5 mb-5 bg-[#1a1a1a] border border-[#222] rounded-lg px-3 py-2.5">
+        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-500 to-indigo-500 flex items-center justify-center text-xs font-bold text-white shrink-0">
+          {invite.inviter_name?.[0]?.toUpperCase()}
+        </div>
+        <div>
+          <p className="text-sm font-medium text-white leading-tight">{invite.inviter_name}</p>
+          <p className="text-xs text-[#555]">{invite.inviter_email}</p>
+        </div>
+      </div>
 
+      {/* Actions */}
       <div className="flex items-center gap-2">
         <button
           onClick={onAccept}
           disabled={loading}
-          className="px-3.5 py-1.5 bg-white text-black text-xs font-medium rounded-lg hover:bg-[#e0e0e0] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          className="btn-hover flex-1 py-2 bg-white text-black text-xs font-medium rounded-lg hover:bg-[#e8e8e8] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
           {loading ? "..." : "Accept"}
         </button>
         <button
           onClick={onReject}
           disabled={loading}
-          className="px-3.5 py-1.5 bg-transparent text-[#888] border border-[#2a2a2a] text-xs font-medium rounded-lg hover:border-[#555] hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          className="btn-hover flex-1 py-2 bg-transparent text-[#666] border border-[#2a2a2a] text-xs font-medium rounded-lg hover:border-red-500/40 hover:text-red-400 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          {loading ? "..." : "Reject"}
+          {loading ? "..." : "Decline"}
         </button>
       </div>
     </div>

@@ -28,10 +28,10 @@ export default function AddTaskModal({ projectId, onClose, onAdd }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md animate-fadeIn"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="bg-[#141414] border border-[#2a2a2a] rounded-2xl w-full max-w-md mx-4 p-6 shadow-2xl">
+      <div className="animate-scaleIn bg-[#141414] border border-[#2a2a2a] rounded-2xl w-full max-w-md mx-4 p-6 shadow-2xl">
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-base font-semibold text-white">New Task</h2>
           <button onClick={onClose} className="text-[#555] hover:text-white transition-colors text-xl leading-none">×</button>

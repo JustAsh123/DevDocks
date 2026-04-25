@@ -128,3 +128,24 @@ export const inviteResponse = async (req, res) => {
     message: result.message,
   });
 };
+
+// GET /projects/members-stats/:projId
+export const getMembersStats = async (req, res) => {
+  const { projId } = req.params;
+  const result = await projectService.getMembersStats(projId);
+  if (!result.success) {
+    return res.status(400).json({ success: false, message: result.message });
+  }
+  return res.json({ success: true, members: result.members });
+};
+
+// DELETE /projects/members/:projId/:memberId
+export const removeMember = async (req, res) => {
+  const { projId, memberId } = req.params;
+  const requesterId = req.user.id;
+  const result = await projectService.removeMember(projId, memberId, requesterId);
+  if (!result.success) {
+    return res.status(403).json({ success: false, message: result.message });
+  }
+  return res.json({ success: true, message: result.message });
+};
