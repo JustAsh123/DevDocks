@@ -19,7 +19,7 @@ export const getProjects = async (userId) => {
 
 export const getProjectMembers = async (projId) => {
   const result = await pool.query(
-    "select u.name from users as u inner join project_members as pm on pm.user_id = u.id where pm.project_id = $1",
+    "select u.id, u.name from users as u inner join project_members as pm on pm.user_id = u.id where pm.project_id = $1",
     [projId],
   );
   if (result.rows.length === 0) {

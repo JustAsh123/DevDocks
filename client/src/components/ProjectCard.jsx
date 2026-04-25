@@ -1,4 +1,5 @@
 import { useState, useEffect, memo } from "react";
+import { useNavigate } from "react-router-dom";
 import { getProjectMembers } from "../api/projects";
 import InviteMemberModal from "../modals/InviteMemberModal";
 import { useAuth } from "../context/AuthContext";
@@ -6,6 +7,7 @@ import { useAuth } from "../context/AuthContext";
 function ProjectCard({ project, onInvite }) {
   const [showModal, setShowModal] = useState(false);
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   const formattedDate = new Date(project.created_at).toLocaleDateString(
     "en-IN",
@@ -58,7 +60,7 @@ function ProjectCard({ project, onInvite }) {
       </div>
       <p className="text-xs text-[#555] mb-4">Created {formattedDate}</p>
 
-      <div className="flex items-center gap-1.5 flex-wrap">
+      <div className="flex items-center gap-1.5 flex-wrap mb-4">
         {members.map((member, i) => (
           <span
             key={i}
@@ -68,6 +70,13 @@ function ProjectCard({ project, onInvite }) {
           </span>
         ))}
       </div>
+
+      <button
+        onClick={() => navigate(`/project/${project.id}`)}
+        className="w-full text-center py-2 rounded-lg border border-[#2a2a2a] text-xs text-[#555] hover:border-[#444] hover:text-[#aaa] transition-all"
+      >
+        Open Board →
+      </button>
     </div>
   );
 }
