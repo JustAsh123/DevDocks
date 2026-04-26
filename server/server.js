@@ -14,7 +14,7 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
+    origin: ["http://localhost:5173", "http://127.0.0.1:5173", "https://dev-docks-ten.vercel.app"],
     credentials: true,
   })
 );
@@ -34,11 +34,15 @@ app.use((err, req, res, next) => {
   res.status(500).json({ success: false, message: err.message || "Internal server error" });
 });
 
-app.listen(3000, () => {
-  console.log("Server is running on port 3000");
-  if (pool) {
-    console.log("Connected to database");
-  } else {
-    console.log("Failed to connect to database");
-  }
-});
+if (process.env.NODE_ENV !== "production") {
+  app.listen(3000, () => {
+    console.log("Server is running on port 3000");
+    if (pool) {
+      console.log("Connected to database");
+    } else {
+      console.log("Failed to connect to database");
+    }
+  });
+}
+
+export default app;
